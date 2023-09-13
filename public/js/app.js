@@ -14,154 +14,232 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 var root = ReactDOM.createRoot(document.getElementById("root"));
-var products = [{
-  name: "iphone 11",
-  price: 50000,
-  unit: "₺"
-}, {
-  name: "iphone 12",
-  price: 60000,
-  unit: "₺"
-}, {
-  name: "iphone 13",
-  price: 700,
-  unit: "$"
-}, {
-  name: "iphone 14",
-  price: 800,
-  unit: "$"
-}, {
-  name: "iphone 15",
-  price: 500,
-  unit: "€"
-}];
-var selectedProducts = [];
-function selectProduct(event, p_name) {
-  console.log(event.target, p_name);
-  if (!selectedProducts.includes(p_name)) {
-    selectedProducts.push(p_name);
+var TodoApp = /*#__PURE__*/function (_React$Component) {
+  _inherits(TodoApp, _React$Component);
+  var _super = _createSuper(TodoApp);
+  function TodoApp(props) {
+    var _this;
+    _classCallCheck(this, TodoApp);
+    _this = _super.call(this, props);
+    _this.clearItems = _this.clearItems.bind(_assertThisInitialized(_this));
+    _this.addItem = _this.addItem.bind(_assertThisInitialized(_this));
+    _this.deleteItem = _this.deleteItem.bind(_assertThisInitialized(_this));
+    _this.state = {
+      gorevler: ['görev 1', 'görev 2', 'görev 3']
+    };
+    return _this;
   }
-  renderApp();
-}
-function saveProduct(event) {
-  event.preventDefault();
-  var p_name = event.target.elements.p_name.value;
-  var p_price = event.target.elements.p_price.value;
-  var product = {
-    name: p_name,
-    price: p_price
-  };
-  products.push(product);
-  event.target.elements.p_name.value = "";
-  event.target.elements.p_price.value = "";
-  renderApp();
-}
-var Header = /*#__PURE__*/function (_React$Component) {
-  _inherits(Header, _React$Component);
-  var _super = _createSuper(Header);
+  _createClass(TodoApp, [{
+    key: "deleteItem",
+    value: function deleteItem(item) {
+      this.setState(function (prevState) {
+        var arr = prevState.gorevler.filter(function (i) {
+          return item != i;
+        });
+        return {
+          gorevler: arr
+        };
+      });
+    }
+  }, {
+    key: "clearItems",
+    value: function clearItems() {
+      this.setState({
+        gorevler: []
+      });
+    }
+  }, {
+    key: "addItem",
+    value: function addItem(item) {
+      if (this.state.gorevler.indexOf(item) > -1) {
+        return 'aynı elemanı ekleyemezsiniz';
+      }
+      this.setState(function (prevState) {
+        return {
+          gorevler: prevState.gorevler.concat(item)
+        };
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var data = {
+        baslik: "Todo Application",
+        aciklama: "Bekleyen Görevler"
+      };
+      return /*#__PURE__*/React.createElement("div", {
+        className: "container"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "card"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "card-header"
+      }, /*#__PURE__*/React.createElement(Header, {
+        title: data.baslik,
+        description: data.aciklama
+      })), /*#__PURE__*/React.createElement("div", {
+        className: "card-body"
+      }, /*#__PURE__*/React.createElement(TodoList, {
+        items: this.state.gorevler,
+        clear: this.clearItems,
+        deleteItem: this.deleteItem
+      })), /*#__PURE__*/React.createElement("div", {
+        className: "card-footer"
+      }, /*#__PURE__*/React.createElement(NewItem, {
+        addItem: this.addItem
+      }))));
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      // console.log("component oluşturuldu.");
+      var json_obj = localStorage.getItem("items");
+      var item = JSON.parse(json_obj);
+      if (item) {
+        this.setState({
+          gorevler: item
+        });
+      }
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps, prevState) {
+      if (prevState.gorevler.length !== this.state.gorevler.length) {
+        var json_str = JSON.stringify(this.state.gorevler);
+        localStorage.setItem("items", json_str);
+      }
+      // console.log("component güncellendi.");
+    }
+  }]);
+  return TodoApp;
+}(React.Component);
+var Header = /*#__PURE__*/function (_React$Component2) {
+  _inherits(Header, _React$Component2);
+  var _super2 = _createSuper(Header);
   function Header() {
     _classCallCheck(this, Header);
-    return _super.apply(this, arguments);
+    return _super2.apply(this, arguments);
   }
   _createClass(Header, [{
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
-        id: "header"
-      }, "\xDCr\xFCn Listesi"), /*#__PURE__*/React.createElement("h3", null, "Se\xE7ilen \xDCr\xFCnler: ", selectedProducts.length));
+      return /*#__PURE__*/React.createElement("div", {
+        className: "text-center"
+      }, /*#__PURE__*/React.createElement("h1", {
+        className: "h3"
+      }, this.props.title), /*#__PURE__*/React.createElement("p", null, " ", this.props.description));
     }
   }]);
   return Header;
 }(React.Component);
-var NewProduct = /*#__PURE__*/function (_React$Component2) {
-  _inherits(NewProduct, _React$Component2);
-  var _super2 = _createSuper(NewProduct);
-  function NewProduct() {
-    _classCallCheck(this, NewProduct);
-    return _super2.apply(this, arguments);
-  }
-  _createClass(NewProduct, [{
-    key: "render",
-    value: function render() {
-      return /*#__PURE__*/React.createElement("form", {
-        onSubmit: saveProduct
-      }, /*#__PURE__*/React.createElement("input", {
-        type: "text",
-        name: "p_name",
-        id: "p_name"
-      }), /*#__PURE__*/React.createElement("input", {
-        type: "text",
-        name: "p_price",
-        id: "p_price"
-      }), /*#__PURE__*/React.createElement("button", {
-        type: "submit"
-      }, "\xDCr\xFCn Ekle"));
-    }
-  }]);
-  return NewProduct;
-}(React.Component);
-var ProductList = /*#__PURE__*/function (_React$Component3) {
-  _inherits(ProductList, _React$Component3);
-  var _super3 = _createSuper(ProductList);
-  function ProductList() {
-    _classCallCheck(this, ProductList);
+var TodoList = /*#__PURE__*/function (_React$Component3) {
+  _inherits(TodoList, _React$Component3);
+  var _super3 = _createSuper(TodoList);
+  function TodoList() {
+    _classCallCheck(this, TodoList);
     return _super3.apply(this, arguments);
   }
-  _createClass(ProductList, [{
+  _createClass(TodoList, [{
     key: "render",
     value: function render() {
-      return this.props.products.map(function (product, index) {
-        return /*#__PURE__*/React.createElement(Product, {
-          product: product,
-          key: index
+      var _this2 = this;
+      return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("ul", {
+        className: "list-group"
+      }, this.props.items.map(function (gorev, index) {
+        return /*#__PURE__*/React.createElement(TodoItem, {
+          key: index,
+          item: gorev,
+          deleteItem: _this2.props.deleteItem
         });
-      });
+      })), this.props.items.length > 0 ? /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("button", {
+        className: "btn btn-outline-danger float-end mt-3",
+        onClick: this.props.clear
+      }, "Temizle")) : /*#__PURE__*/React.createElement("div", {
+        className: "alert alert-warning"
+      }, "Bir g\xF6rev ekleyiniz."));
     }
   }]);
-  return ProductList;
+  return TodoList;
 }(React.Component);
-var Product = /*#__PURE__*/function (_React$Component4) {
-  _inherits(Product, _React$Component4);
-  var _super4 = _createSuper(Product);
-  function Product() {
-    _classCallCheck(this, Product);
-    return _super4.apply(this, arguments);
+var NewItem = /*#__PURE__*/function (_React$Component4) {
+  _inherits(NewItem, _React$Component4);
+  var _super4 = _createSuper(NewItem);
+  function NewItem(props) {
+    var _this3;
+    _classCallCheck(this, NewItem);
+    _this3 = _super4.call(this, props);
+    _this3.onFormSubmit = _this3.onFormSubmit.bind(_assertThisInitialized(_this3));
+    _this3.state = {
+      error: ''
+    };
+    return _this3;
   }
-  _createClass(Product, [{
+  _createClass(NewItem, [{
+    key: "onFormSubmit",
+    value: function onFormSubmit(e) {
+      e.preventDefault();
+      var item = e.target.elements.txtItem.value.trim();
+      if (item) {
+        e.target.elements.txtItem.value = "";
+        var error = this.props.addItem(item);
+        this.setState({
+          error: error
+        });
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
-      var _this = this;
-      return /*#__PURE__*/React.createElement("div", {
-        className: "product-details"
-      }, /*#__PURE__*/React.createElement("h2", null, " ", this.props.product.name, " "), this.props.product.price, " ", this.props.product.unit, /*#__PURE__*/React.createElement("button", {
-        type: "button",
-        onClick: function onClick(event) {
-          return selectProduct(event, _this.props.product.name);
-        }
-      }, "Ekle"));
+      return /*#__PURE__*/React.createElement("div", null, this.state.error && /*#__PURE__*/React.createElement("p", null, " ", this.state.error, " "), /*#__PURE__*/React.createElement("form", {
+        className: "input-group",
+        onSubmit: this.onFormSubmit
+      }, /*#__PURE__*/React.createElement("input", {
+        className: "form-control",
+        type: "text",
+        name: "txtItem"
+      }), /*#__PURE__*/React.createElement("button", {
+        className: "btn btn-",
+        type: "submit"
+      }, "Ekle")));
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate() {
+      console.log("newitem component güncellendi.");
     }
   }]);
-  return Product;
+  return NewItem;
 }(React.Component);
-var App = /*#__PURE__*/function (_React$Component5) {
-  _inherits(App, _React$Component5);
-  var _super5 = _createSuper(App);
-  function App() {
-    _classCallCheck(this, App);
-    return _super5.apply(this, arguments);
+var TodoItem = /*#__PURE__*/function (_React$Component5) {
+  _inherits(TodoItem, _React$Component5);
+  var _super5 = _createSuper(TodoItem);
+  function TodoItem(props) {
+    var _this4;
+    _classCallCheck(this, TodoItem);
+    _this4 = _super5.call(this, props);
+    _this4.deleteItem = _this4.deleteItem.bind(_assertThisInitialized(_this4));
+    return _this4;
   }
-  _createClass(App, [{
+  _createClass(TodoItem, [{
+    key: "deleteItem",
+    value: function deleteItem() {
+      this.props.deleteItem(this.props.item);
+    }
+  }, {
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Header, null), /*#__PURE__*/React.createElement(NewProduct, null), /*#__PURE__*/React.createElement(ProductList, {
-        products: products
-      }));
+      return /*#__PURE__*/React.createElement("li", {
+        className: "list-group-item"
+      }, this.props.item, /*#__PURE__*/React.createElement("button", {
+        className: "btn btn-danger btn-sm float-end",
+        onClick: this.deleteItem
+      }, "x"));
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      console.log("eleman silindi");
     }
   }]);
-  return App;
-}(React.Component); // function renderApp() {
-//     var template = 
-//     root.render(template);
-// }
-// renderApp();
-root.render( /*#__PURE__*/React.createElement(App, null));
+  return TodoItem;
+}(React.Component);
+root.render( /*#__PURE__*/React.createElement(TodoApp, null));
